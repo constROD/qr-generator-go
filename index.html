@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fulcrum QR Code Generator</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.1.9/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="flex flex-col h-full justify-center py-10">
+      <div class="grid gap-2">
+        <div class="flex flex-col gap-2 justify-center items-center">
+          <input
+            id="input-link"
+            type="text"
+            placeholder="Place the link here ex. https://nyfulcrum.com"
+            class="input input-bordered w-screen max-w-xl"
+          />
+          <input
+            id="input-size"
+            type="number"
+            placeholder="Size in pixels ex. 500"
+            class="input input-bordered w-screen max-w-xl"
+          />
+          <button id="button-generate" class="btn btn-active btn-neutral">
+            Generate QR CODE
+          </button>
+        </div>
+
+        <div
+          id="qr-code-container"
+          class="flex items-center justify-center"
+        ></div>
+      </div>
+    </div>
+  </body>
+  <script>
+    document
+      .getElementById("button-generate")
+      .addEventListener("click", function () {
+        const inputLink = document.getElementById("input-link");
+        const inputSize = document.getElementById("input-size");
+        const qrCodeContainer = document.getElementById("qr-code-container");
+
+        if (inputLink.value === "") {
+          alert("Please enter a link");
+          return;
+        } else {
+          if (!inputLink.value.includes("http")) {
+            alert("Please enter a valid link");
+            return;
+          }
+        }
+
+        const encodedLink = encodeURIComponent(inputLink.value);
+
+        // Create an img element
+        let imgQRCode = document.createElement("img");
+        // Request the QR code from your Go server
+        imgQRCode.src = `/qr/generate?data=${encodedLink}&size=${inputSize.value}`;
+
+        // Remove old image from the container
+        while (qrCodeContainer.firstChild) {
+          qrCodeContainer.removeChild(qrCodeContainer.firstChild);
+        }
+
+        // Append the new img element to the qr-code-container
+        qrCodeContainer.appendChild(imgQRCode);
+      });
+  </script>
+</html>
